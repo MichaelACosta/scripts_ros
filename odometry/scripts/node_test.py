@@ -15,6 +15,8 @@ def goAhead():
 
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
     pub.publish(True)
+    move = rospy.Publisher('channel_y', Int16, queue_size=1)
+    move.publish(175)
 
     if ((stopGoAhead(rightValue)) or (stopGoAhead(leftValue)):
         try:
@@ -25,12 +27,10 @@ def goAhead():
 def callbackLeft(data):
     global leftValue
     leftValue = int(data.data)
-    goAhead()
 
 def callbackRight(data):
     global rightValue
     rightValue = int(data.data)
-    goAhead()
 
 def stopMoviment():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
@@ -38,11 +38,12 @@ def stopMoviment():
     stop = rospy.Publisher('channel_y', Int16, queue_size=1)
     stop.publish(135)
 
-def listenerLeft():
+def listener():
     rospy.Subscriber("left_sensor", Int16, callbackLeft)
     rospy.Subscriber("right_sensor", Int16, callbackRight)
+    goAhead()
     rospy.spin()
 
 if __name__ == '__main__':
     rospy.init_node('test', anonymous=True)
-    listenerLeft()
+    listener()
