@@ -2,6 +2,7 @@
 import rospy
 from std_msgs.msg import Int16
 from std_msgs.msg import Bool
+from std_msgs.msg import String
 
 leftValue = 0
 rightValue = 0
@@ -12,13 +13,16 @@ def stopGoAhead(value):
 def goAhead():
     global leftValue
     global rightValue
-    pub = rospy.Publisher('pattern', Bool, queue_size=1)
-    pub.publish(True)
-    move = rospy.Publisher('channel_y', Int16, queue_size=1)
-    move.publish(175)
+    try:
+        startMoviment()
+    except rospy.ROSInterruptException:
+        pass
     while not (stopGoAhead(rightValue) or stopGoAhead(leftValue)):
-        None
-    stopMoviment()
+        rospy.spin()
+    try:
+        stopMoviment()
+    except rospy.ROSInterruptException:
+        pass
 
 def callbackLeft(data):
     global leftValue
@@ -27,6 +31,16 @@ def callbackLeft(data):
 def callbackRight(data):
     global rightValue
     rightValue = int(data.data)
+
+def callbackWalk(data):
+    if (data.data == 'goAhead'):
+        goAhead()
+
+def startMoviment():
+    pub = rospy.Publisher('pattern', Bool, queue_size=1)
+    pub.publish(True)
+    stop = rospy.Publisher('channel_y', Int16, queue_size=1)
+    stop.publish(175)
 
 def stopMoviment():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
@@ -37,7 +51,7 @@ def stopMoviment():
 def listener():
     rospy.Subscriber("left_sensor", Int16, callbackLeft)
     rospy.Subscriber("right_sensor", Int16, callbackRight)
-    goAhead()
+    rospy.Subscriber("walk", String, callbackWalk)
     rospy.spin()
 
 if __name__ == '__main__':
