@@ -12,17 +12,13 @@ def stopGoAhead(value):
 def goAhead():
     global leftValue
     global rightValue
-
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
     pub.publish(True)
     move = rospy.Publisher('channel_y', Int16, queue_size=1)
     move.publish(175)
-
-    if ((stopGoAhead(rightValue)) or (stopGoAhead(leftValue)):
-        try:
-            stopMoviment()
-        except rospy.ROSInterruptException:
-            pass
+    while not (stopGoAhead(rightValue) or stopGoAhead(leftValue)):
+        None
+    stopMoviment()
 
 def callbackLeft(data):
     global leftValue
