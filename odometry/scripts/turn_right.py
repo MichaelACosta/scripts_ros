@@ -5,19 +5,18 @@ from std_msgs.msg import Bool
 
 leftValue = 0
 
-def turn_right():
+def stopTurnRight():
     global leftValue
+    return leftValue >= 953
 
+def turnRight():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
     pub.publish(True)
     move = rospy.Publisher('channel_x', Int16, queue_size=1)
     move.publish(95)
-
-    if (leftValue >= 953):
-        try:
-            stopMoviment()
-        except rospy.ROSInterruptException:
-            pass
+    while not stopTurnRight():
+        None
+    stopMoviment()
 
 def callbackLeft(data):
     global leftValue
@@ -31,7 +30,7 @@ def stopMoviment():
 
 def listener():
     rospy.Subscriber("left_sensor", Int16, callbackLeft)
-    turn_right()
+    turnRight()
     rospy.spin()
 
 if __name__ == '__main__':
