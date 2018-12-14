@@ -7,6 +7,19 @@ from std_msgs.msg import String
 leftValue = 0
 rightValue = 0
 
+def turnRight():
+    global leftValue
+    try:
+        startMovimentTurnRight()
+    except rospy.ROSInterruptException:
+        pass
+    while not leftValue >= 953:
+        rospy.spin()
+    try:
+        stopMoviment()
+    except rospy.ROSInterruptException:
+        pass
+
 def turnLeft():
     global rightValue
     try:
@@ -50,6 +63,14 @@ def callbackWalk(data):
         goAhead()
     if (data.data == 'turnLeft'):
         turnLeft()
+    if (data.data == 'turnRight'):
+        turnRight()
+
+def startMovimentTurnRight():
+    pub = rospy.Publisher('pattern', Bool, queue_size=1)
+    pub.publish(True)
+    stop = rospy.Publisher('channel_x', Int16, queue_size=1)
+    stop.publish(95)
 
 def startMovimentTurnLeft():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
