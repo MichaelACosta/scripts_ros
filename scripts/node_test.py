@@ -69,20 +69,20 @@ def callbackWalk(data):
 def startMovimentTurnRight():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
     pub.publish(True)
-    stop = rospy.Publisher('channel_x', Int16, queue_size=1)
-    stop.publish(95)
+    move = rospy.Publisher('channel_x', Int16, queue_size=1)
+    move.publish(95)
 
 def startMovimentTurnLeft():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
     pub.publish(True)
-    stop = rospy.Publisher('channel_x', Int16, queue_size=1)
-    stop.publish(175)
+    move = rospy.Publisher('channel_x', Int16, queue_size=1)
+    move.publish(175)
 
 def startMovimentAhead():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
     pub.publish(True)
-    stop = rospy.Publisher('channel_y', Int16, queue_size=1)
-    stop.publish(175)
+    move = rospy.Publisher('channel_y', Int16, queue_size=1)
+    move.publish(175)
 
 def stopMoviment():
     pub = rospy.Publisher('pattern', Bool, queue_size=1)
